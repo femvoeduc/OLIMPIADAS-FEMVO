@@ -4,7 +4,7 @@
 // Para producción, reemplazar por llamadas a una API o panel admin.
 // ============================================================
 
-const SCHOOLS = [
+let SCHOOLS = [
   "Colegio Valle del Olivo", "Liceo San Ignacio", "Colegio Andes del Pacífico",
   "Escuela Manuel Rodríguez", "Colegio Las Encinas", "Liceo Bicentenario Quillota",
   "Colegio Padre Hurtado", "Escuela República de Chile", "Colegio Santa Teresa",
@@ -12,7 +12,7 @@ const SCHOOLS = [
 ];
 
 // ---------- MEDALLERO (acumulado, en vivo) ----------
-const MEDAL_TABLE = [
+let MEDAL_TABLE = [
   { school: "Colegio Valle del Olivo", gold: 7, silver: 4, bronze: 3 },
   { school: "Liceo San Ignacio", gold: 6, silver: 5, bronze: 2 },
   { school: "Colegio Andes del Pacífico", gold: 4, silver: 3, bronze: 5 },
@@ -29,7 +29,7 @@ const MEDAL_TABLE = [
  .sort((a,b)=> b.gold-a.gold || b.silver-a.silver || b.bronze-a.bronze);
 
 // ---------- PROGRAMACIÓN POR DÍA ----------
-const SCHEDULE = {
+let SCHEDULE = {
   "sab": {
     label: "Sáb 27", date: "27 de junio",
     items: [
@@ -64,7 +64,7 @@ const SCHEDULE = {
 };
 
 // ---------- COMPETENCIAS EN VIVO (resultados parciales que se están corriendo ahora) ----------
-const LIVE_EVENTS = [
+let LIVE_EVENTS = [
   {
     name: "100m planos — Final Damas",
     cat: "Categoría 14-15 años",
@@ -89,7 +89,7 @@ const LIVE_EVENTS = [
 ];
 
 // ---------- COMPETENCIAS FINALIZADAS HOY ----------
-const FINAL_EVENTS_TODAY = [
+let FINAL_EVENTS_TODAY = [
   {
     name: "400m planos — Final",
     cat: "Categoría 14-15 años · Damas",
@@ -133,7 +133,7 @@ const FINAL_EVENTS_TODAY = [
 ];
 
 // ---------- RESULTADOS HISTÓRICOS (años anteriores) ----------
-const HISTORICAL = {
+let HISTORICAL = {
   "2025": [
     { event:"100m planos Damas (16-18)", first:{athlete:"Camila Herrera", school:"Liceo San Ignacio"}, second:{athlete:"Daniela Soto", school:"Colegio Valle del Olivo"}, third:{athlete:"Paula Jiménez", school:"Colegio Las Encinas"} },
     { event:"100m planos Varones (16-18)", first:{athlete:"Felipe Araya", school:"Colegio Valle del Olivo"}, second:{athlete:"Cristián Molina", school:"Colegio Andes del Pacífico"}, third:{athlete:"Bastián Núñez", school:"Liceo San Ignacio"} },
@@ -155,7 +155,7 @@ const HISTORICAL = {
 };
 
 // ---------- GALERÍA DE FOTOS ----------
-const GALLERY = [
+let GALLERY = [
   { url:"img/g1.svg", cap:"Salida 100m planos", filter:"pista" },
   { url:"img/g2.svg", cap:"Calentamiento previo", filter:"pista" },
   { url:"img/g3.svg", cap:"Podio damas 400m", filter:"podio" },

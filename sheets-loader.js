@@ -166,15 +166,15 @@ async function loadFromSheets(){
       fetchSheetTab("Info"),
     ]);
 
-    if(medalRows.length) window.MEDAL_TABLE = buildMedalTable(medalRows);
-    if(schedRows.length) window.SCHEDULE = buildSchedule(schedRows);
+    if(medalRows.length) MEDAL_TABLE = buildMedalTable(medalRows);
+    if(schedRows.length) SCHEDULE = buildSchedule(schedRows);
     if(liveRows.length){
       const { live, final } = buildLiveAndFinal(liveRows);
-      window.LIVE_EVENTS = live;
-      window.FINAL_EVENTS_TODAY = final;
+      LIVE_EVENTS = live;
+      FINAL_EVENTS_TODAY = final;
     }
-    if(histRows.length) window.HISTORICAL = buildHistorico(histRows);
-    if(galRows.length) window.GALLERY = buildGallery(galRows);
+    if(histRows.length) HISTORICAL = buildHistorico(histRows);
+    if(galRows.length) GALLERY = buildGallery(galRows);
     if(infoRows.length) window.EVENT_INFO = buildInfo(infoRows);
 
     return true;
