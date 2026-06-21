@@ -24,6 +24,11 @@ function applyEventInfo(){
     SCREEN_META.home.sub = info.Recinto;
     const venueTitle = document.querySelector('#screen-ubicacion .venue-card .row .t');
     if(venueTitle) venueTitle.textContent = info.Recinto;
+    // Si la pantalla de Inicio está activa en este momento, refresca el subtítulo ya mismo
+    const subEl = document.getElementById('screenSub');
+    if(subEl && document.getElementById('screen-home').classList.contains('active')){
+      subEl.textContent = info.Recinto;
+    }
   }
   if(info.Direccion){
     const venueDesc = document.querySelector('#screen-ubicacion .venue-card .row .d');
@@ -55,6 +60,52 @@ function goTo(screen){
   document.getElementById('screenSub').textContent = SCREEN_META[screen].sub;
   document.querySelector('.content').scrollTo({top:0, behavior:'instant'});
   window.scrollTo({top:0, behavior:'instant'});
+}
+
+// ---------------- HOME: estadísticas y "ahora compitiendo" (calculados desde los datos reales) ----------------
+function renderHomeStats(){
+  // Colegios: cuenta filas reales del medallero
+  const statColegios = document.getElementById('statColegios');
+  if(statColegios) statColegios.textContent = MEDAL_TABLE.length;
+
+  // Pruebas: suma de todas las pruebas en la programación (ambas jornadas)
+  const statPruebas = document.getElementById('statPruebas');
+  if(statPruebas){
+    const totalPruebas = Object.values(SCHEDULE).reduce((sum, day) => sum + day.items.length, 0);
+    statPruebas.textContent = totalPruebas;
+  }
+
+  // Jornadas: cantidad de días distintos en la programación
+  const statJornadas = document.getElementById('statJornadas');
+  if(statJornadas) statJornadas.textContent = Object.keys(SCHEDULE).length;
+}
+
+function renderHomeNowCompeting(){
+  // Busca la primera prueba marcada como EnVivo (la más reciente agregada en la planilla)
+  const current = LIVE_EVENTS[0];
+
+  const heroEventName = document.getElementById('heroEventName');
+  const liveNowName = document.getElementById('liveNowName');
+  const liveNowDetail = document.getElementById('liveNowDetail');
+  const liveNowCard = document.getElementById('liveNowCard');
+  const heroCard = document.getElementById('heroCard');
+
+  if(current){
+    if(heroEventName) heroEventName.textContent = current.name;
+    if(liveNowName) liveNowName.textContent = current.name;
+    if(liveNowDetail) liveNowDetail.textContent = current.cat;
+    if(heroCard) heroCard.style.display = '';
+    if(liveNowCard) liveNowCard.style.display = '';
+  } else {
+    // No hay ninguna prueba EnVivo en este momento
+    if(heroCard) heroCard.style.display = 'none';
+    if(liveNowCard){
+      liveNowCard.style.display = 'block';
+      liveNowCard.onclick = null;
+      if(liveNowName) liveNowName.textContent = 'Sin pruebas en vivo por ahora';
+      if(liveNowDetail) liveNowDetail.textContent = 'Revisa la Programación para ver el próximo horario';
+    }
+  }
 }
 
 // ---------------- HOME: top 3 medallero ----------------
@@ -287,6 +338,8 @@ async function manualRefresh(){
 // ---------------- INIT ----------------
 function initApp(){
   applyEventInfo();
+  renderHomeStats();
+  renderHomeNowCompeting();
   renderHomeTop3();
   renderDayPills();
   renderTimeline();
