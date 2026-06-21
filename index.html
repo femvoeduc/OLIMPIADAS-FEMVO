@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>VII Olimpiadas Atletismo FEMVO 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy-900:#081d33;
+    --navy-800:#0a2847;
+    --navy-700:#0c3560;
+    --navy-600:#10477f;
+    --navy-100:#e7edf5;
+    --gold:#FFD23F;
+    --orange:#F2994A;
+    --flame-grad: linear-gradient(180deg,#FFE873 0%, #FFD23F 35%, #F2994A 70%, #E8622C 100%);
+    --bg:#F5F7FB;
+    --card:#FFFFFF;
+    --line:#E3E8F0;
+    --text:#0a2847;
+    --text-soft:#5b6b82;
+    --gold-soft:#FFF3D6;
+    --gold-line:#F4C430;
+    --radius:18px;
+    --safe-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:'Inter',sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    overscroll-behavior-y:none;
+  }
+  #app{
+    max-width:480px;
+    margin:0 auto;
+    min-height:100vh;
+    background:var(--bg);
+    position:relative;
+    display:flex;
+    flex-direction:column;
+  }
+
+  /* ---------- Mountain motif (signature element) ---------- */
+  .mtn-divider{
+    width:100%;
+    height:26px;
+    display:block;
+  }
+  .mtn-band{
+    position:relative;
+    overflow:hidden;
+  }
+
+  /* ---------- Top bar ---------- */
+  .topbar{
+    background: linear-gradient(160deg, var(--navy-800) 0%, var(--navy-700) 55%, var(--navy-600) 100%);
+    color:#fff;
+    padding:14px 18px 22px;
+    position:relative;
+    overflow:hidden;
+  }
+  .topbar .mountains-bg{
+    position:absolute;
+    bottom:-2px; left:0; right:0;
+    height:46px;
+    opacity:0.16;
+  }
+  .topbar-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    position:relative;
+    z-index:2;
+  }
+  .brand{
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .brand-mark{
+    width:34px;height:34px;border-radius:9px;
+    background:var(--flame-grad);
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:0 2px 8px rgba(0,0,0,0.25);
+    flex-shrink:0;
+  }
+  .brand-mark svg{width:20px;height:20px;}
+  .brand-text .eyebrow{
+    font-family:'Oswald',sans-serif;
+    font-size:10px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--gold);
+    font-weight:600;
+    line-height:1.2;
+  }
+  .brand-text .title{
+    font-family:'Archivo Black',sans-serif;
+    font-size:15px;
+    letter-spacing:0.01em;
+    line-height:1.1;
+  }
+  .live-pill{
+    display:flex;align-items:center;gap:6px;
+    background:rgba(255,255,255,0.12);
+    border:1px solid rgba(255,255,255,0.25);
+    padding:6px 10px 6px 8px;
+    border-radius:100px;
+    font-family:'Oswald',sans-serif;
+    font-size:10.5px;
+    letter-spacing:0.04em;
+    text-transform:uppercase;
+    font-weight:600;
+    white-space:nowrap;
+  }
+  .flame-dot{
+    width:14px;height:14px;
+    position:relative;
+  }
+  .flame-dot svg{width:100%;height:100%; animation: flicker 1.4s infinite ease-in-out;}
+  @keyframes flicker{
+    0%,100%{ transform: scale(1) translateY(0); }
+    50%{ transform: scale(1.12) translateY(-1px); }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .flame-dot svg{ animation:none; }
+  }
+
+  .topbar-sub{
+    position:relative; z-index:2;
+    margin-top:14px;
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+  }
+  .page-title{
+    font-family:'Archivo Black',sans-serif;
+    font-size:22px;
+    line-height:1.05;
+  }
+  .page-sub{
+    font-family:'Inter',sans-serif;
+    font-size:12.5px;
+    color:rgba(255,255,255,0.7);
+    margin-top:4px;
+  }
+
+  /* ---------- Content ---------- */
+  .content{
+    flex:1;
+    padding:16px 16px calc(92px + var(--safe-bottom));
+  }
+  .screen{ display:none; animation: fadein 0.25s ease; }
+  .screen.active{ display:block; }
+  @keyframes fadein{ from{opacity:0; transform:translateY(4px);} to{opacity:1; transform:translateY(0);} }
+
+  .section-label{
+    font-family:'Oswald',sans-serif;
+    font-size:11px;
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+    color:var(--text-soft);
+    font-weight:600;
+    margin:22px 0 10px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .section-label:first-child{margin-top:4px;}
+  .section-label::after{
+    content:'';
+    flex:1;
+    height:1px;
+    background:var(--line);
+  }
+
+  .card{
+    background:var(--card);
+    border-radius:var(--radius);
+    border:1px solid var(--line);
+    overflow:hidden;
+  }
+
+  /* ---------- Home screen ---------- */
+  .hero-card{
+    background: linear-gradient(135deg, var(--navy-700), var(--navy-800));
+    border-radius:20px;
+    padding:18px;
+    color:#fff;
+    position:relative;
+    overflow:hidden;
+    margin-bottom:6px;
+  }
+  .hero-card .mountains-bg{
+    position:absolute; bottom:0; left:0; right:0; height:60px; opacity:0.18;
+  }
+  .hero-row{ position:relative; z-index:2; display:flex; justify-content:space-between; align-items:flex-start; gap:10px;}
+  .hero-event{
+    font-family:'Oswald',sans-serif;
+    font-size:11px; letter-spacing:0.1em; text-transform:uppercase;
+    color:var(--gold); font-weight:600;
+  }
+  .hero-name{
+    font-family:'Archivo Black',sans-serif;
+    font-size:19px; margin-top:4px; line-height:1.15;
+  }
+  .hero-meta{
+    margin-top:10px; font-size:12.5px; color:rgba(255,255,255,0.75);
+    display:flex; gap:14px; flex-wrap:wrap; position:relative; z-index:2;
+  }
+  .hero-meta span{display:flex; align-items:center; gap:5px;}
+  .hero-cta{
+    margin-top:14px; position:relative; z-index:2;
+    display:flex; gap:8px;
+  }
+  .btn{
+    border:none; cursor:pointer;
+    font-family:'Oswald',sans-serif;
+    font-size:12.5px; font-weight:600;
+    letter-spacing:0.03em;
+    padding:10px 14px;
+    border-radius:11px;
+    display:flex; align-items:center; gap:6px;
+  }
+  .btn-gold{ background:var(--gold); color:var(--navy-900); }
+  .btn-ghost{ background:rgba(255,255,255,0.12); color:#fff; border:1px solid rgba(255,255,255,0.3); }
+
+  .stat-grid{
+    display:grid; grid-template-columns:repeat(3,1fr);
+    gap:10px; margin-top:14px;
+  }
+  .stat-box{
+    background:var(--card); border:1px solid var(--line); border-radius:14px;
+    padding:12px 8px; text-align:center;
+  }
+  .stat-box .num{ font-family:'Archivo Black',sans-serif; font-size:20px; color:var(--navy-700);}
+  .stat-box .lbl{ font-size:10.5px; color:var(--text-soft); margin-top:2px; text-transform:uppercase; letter-spacing:0.03em; font-weight:600;}
+
+  .live-now-card{
+    border-radius:16px; border:1px solid var(--line); background:var(--card);
+    padding:14px; display:flex; align-items:center; gap:12px;
+    border-left:4px solid var(--orange);
+  }
+  .live-now-card .ico{
+    width:42px;height:42px; border-radius:11px;
+    background:var(--gold-soft); display:flex; align-items:center; justify-content:center; flex-shrink:0;
+  }
+  .live-now-card .ico svg{width:22px;height:22px;}
+  .live-now-card .info{flex:1; min-width:0;}
+  .live-now-card .ev-name{font-weight:700; font-size:14px;}
+  .live-now-card .ev-detail{font-size:12px; color:var(--text-soft); margin-top:2px;}
+  .chev{ color:var(--text-soft); flex-shrink:0;}
+
+  .top3-mini{
+    display:flex; flex-direction:column; gap:8px;
+  }
+  .school-row{
+    display:flex; align-items:center; gap:12px;
+    background:var(--card); border:1px solid var(--line); border-radius:14px;
+    padding:10px 12px;
+  }
+  .rank-badge{
+    width:30px;height:30px; border-radius:50%; flex-shrink:0;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Archivo Black',sans-serif; font-size:13px; color:#fff;
+  }
+  .rank-1{background:linear-gradient(135deg,#FFD23F,#E8A93B);}
+  .rank-2{background:linear-gradient(135deg,#C9D3DE,#9AA7B5);}
+  .rank-3{background:linear-gradient(135deg,#E3A56B,#C57A3F);}
+  .school-row .sname{font-weight:700; font-size:13.5px; flex:1;}
+  .medal-mini{display:flex; gap:8px; font-size:11.5px; color:var(--text-soft); font-weight:600;}
+
+  /* ---------- Bottom nav ---------- */
+  .bottom-nav{
+    position:fixed;
+    bottom:0; left:0; right:0;
+    max-width:480px; margin:0 auto;
+    background:rgba(255,255,255,0.97);
+    backdrop-filter:blur(10px);
+    border-top:1px solid var(--line);
+    display:flex;
+    padding:8px 4px calc(8px + var(--safe-bottom));
+    z-index:50;
+  }
+  .nav-btn{
+    flex:1; background:none; border:none; cursor:pointer;
+    display:flex; flex-direction:column; align-items:center; gap:3px;
+    padding:6px 2px;
+    color:var(--text-soft);
+    font-family:'Oswald',sans-serif;
+    font-size:10px; letter-spacing:0.02em;
+    font-weight:600;
+    text-transform:uppercase;
+    border-radius:10px;
+    transition:color .15s;
+  }
+  .nav-btn svg{width:21px;height:21px; transition:transform .15s;}
+  .nav-btn.active{ color:var(--navy-700); }
+  .nav-btn.active svg{ transform:translateY(-1px); }
+  .nav-dot{
+    width:4px;height:4px;border-radius:50%; background:var(--orange); margin-top:-2px;
+    opacity:0;
+  }
+  .nav-btn.active .nav-dot{opacity:1;}
+
+  /* ---------- Ubicacion ---------- */
+  .map-frame{
+    border-radius:16px; overflow:hidden; border:1px solid var(--line);
+    height:200px; position:relative;
+  }
+  .map-frame iframe{width:100%; height:100%; border:0; display:block;}
+  .venue-card{
+    margin-top:12px;
+  }
+  .venue-card .row{
+    display:flex; gap:12px; padding:14px; align-items:flex-start;
+    border-bottom:1px solid var(--line);
+  }
+  .venue-card .row:last-child{border-bottom:none;}
+  .venue-card .row .icowrap{
+    width:36px;height:36px;border-radius:10px;background:var(--navy-100);
+    display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  }
+  .venue-card .row .icowrap svg{width:18px;height:18px; color:var(--navy-700);}
+  .venue-card .row .t{font-weight:700; font-size:13.5px;}
+  .venue-card .row .d{font-size:12.5px; color:var(--text-soft); margin-top:2px; line-height:1.4;}
+
+  /* ---------- Tabs (segmented) ---------- */
+  .seg-tabs{
+    display:flex; gap:6px; background:#fff; border:1px solid var(--line);
+    border-radius:13px; padding:4px; margin-bottom:14px;
+  }
+  .seg-tab{
+    flex:1; text-align:center; padding:8px 4px; border-radius:10px;
+    font-family:'Oswald',sans-serif; font-size:12px; font-weight:600;
+    letter-spacing:0.02em; text-transform:uppercase;
+    color:var(--text-soft); cursor:pointer; border:none; background:none;
+  }
+  .seg-tab.active{ background:var(--navy-700); color:#fff; }
+
+  /* ---------- Programacion / schedule ---------- */
+  .day-pills{ display:flex; gap:8px; overflow-x:auto; padding-bottom:4px; margin-bottom:14px; }
+  .day-pill{
+    flex-shrink:0; padding:9px 16px; border-radius:100px;
+    background:#fff; border:1px solid var(--line);
+    font-family:'Oswald',sans-serif; font-size:12.5px; font-weight:600;
+    color:var(--text-soft); cursor:pointer; white-space:nowrap;
+  }
+  .day-pill .d{display:block; font-size:9px; letter-spacing:0.06em; opacity:0.7;}
+  .day-pill.active{ background:var(--navy-700); color:#fff; border-color:var(--navy-700);}
+
+  .timeline{ position:relative; padding-left:22px; }
+  .timeline::before{
+    content:''; position:absolute; left:6px; top:6px; bottom:6px; width:2px;
+    background:var(--line);
+  }
+  .tl-item{ position:relative; margin-bottom:14px;}
+  .tl-item::before{
+    content:''; position:absolute; left:-22px; top:4px;
+    width:11px; height:11px; border-radius:50%;
+    background:#fff; border:3px solid var(--navy-600);
+  }
+  .tl-item.done::before{ background:var(--navy-600); border-color:var(--navy-600);}
+  .tl-item.live::before{ background:var(--orange); border-color:var(--orange); box-shadow:0 0 0 4px rgba(242,153,74,0.2);}
+  .tl-card{
+    background:#fff; border:1px solid var(--line); border-radius:14px; padding:11px 13px;
+  }
+  .tl-time{
+    font-family:'Oswald',sans-serif; font-size:11px; font-weight:600; color:var(--text-soft);
+    letter-spacing:0.04em;
+  }
+  .tl-name{ font-weight:700; font-size:13.5px; margin-top:2px;}
+  .tl-tag{
+    display:inline-flex; align-items:center; gap:4px;
+    font-size:10px; font-weight:700; letter-spacing:0.04em; text-transform:uppercase;
+    padding:3px 8px; border-radius:100px; margin-top:6px;
+  }
+  .tag-live{ background:#FDEDE3; color:#C9531C;}
+  .tag-done{ background:#E8EEF5; color:var(--navy-700);}
+  .tag-next{ background:var(--gold-soft); color:#8A6A00;}
+
+  /* ---------- Resultados / live ---------- */
+  .event-card{
+    background:#fff; border:1px solid var(--line); border-radius:16px;
+    margin-bottom:12px; overflow:hidden;
+  }
+  .event-card .ehead{
+    display:flex; justify-content:space-between; align-items:center;
+    padding:12px 14px; border-bottom:1px solid var(--line);
+  }
+  .event-card .ehead .en{ font-weight:700; font-size:13.5px;}
+  .event-card .ehead .ec{ font-size:11.5px; color:var(--text-soft); margin-top:1px;}
+  .badge-live{
+    display:flex; align-items:center; gap:5px;
+    background:#C9531C; color:#fff; font-size:10px; font-weight:700;
+    padding:4px 8px; border-radius:100px; letter-spacing:0.04em; text-transform:uppercase;
+  }
+  .badge-dot{width:6px;height:6px;border-radius:50%; background:#fff; animation:pulse 1.2s infinite;}
+  @keyframes pulse{ 0%,100%{opacity:1;} 50%{opacity:0.3;} }
+  @media (prefers-reduced-motion: reduce){ .badge-dot{animation:none;} }
+  .badge-final{
+    background:var(--navy-100); color:var(--navy-700); font-size:10px; font-weight:700;
+    padding:4px 8px; border-radius:100px; letter-spacing:0.04em; text-transform:uppercase;
+  }
+
+  .result-row{
+    display:flex; align-items:center; gap:10px;
+    padding:10px 14px; border-bottom:1px solid #F0F2F6;
+  }
+  .result-row:last-child{border-bottom:none;}
+  .pos-chip{
+    width:26px;height:26px; border-radius:8px; flex-shrink:0;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Archivo Black',sans-serif; font-size:12px; color:#fff;
+    background:var(--navy-600);
+  }
+  .pos-chip.p1{background:linear-gradient(135deg,#FFD23F,#E8A93B); color:#5c4500;}
+  .pos-chip.p2{background:linear-gradient(135deg,#D7DEE6,#AAB5C2); color:#3a4756;}
+  .pos-chip.p3{background:linear-gradient(135deg,#E3A56B,#C57A3F); color:#4a2c0f;}
+  .result-row .who{flex:1; min-width:0;}
+  .result-row .athlete{font-weight:700; font-size:13px;}
+  .result-row .school{font-size:11.5px; color:var(--text-soft);}
+  .result-row .mark{font-family:'Oswald',sans-serif; font-weight:600; font-size:13px; color:var(--navy-700);}
+
+  /* ---------- Medallero ---------- */
+  .podium-wrap{
+    display:flex; align-items:flex-end; gap:8px; padding:18px 6px 6px;
+    justify-content:center;
+  }
+  .podium-col{ text-align:center; width:30%;}
+  .podium-block{
+    border-radius:10px 10px 0 0;
+    display:flex; align-items:flex-start; justify-content:center;
+    padding-top:8px;
+    font-family:'Archivo Black',sans-serif; color:#fff; font-size:18px;
+  }
+  .podium-1 .podium-block{ height:88px; background:linear-gradient(180deg,#FFD23F,#E8A93B);}
+  .podium-2 .podium-block{ height:64px; background:linear-gradient(180deg,#D7DEE6,#AAB5C2);}
+  .podium-3 .podium-block{ height:50px; background:linear-gradient(180deg,#E3A56B,#C57A3F);}
+  .podium-1 .podium-block{color:#5c4500;}
+  .podium-2 .podium-block{color:#3a4756;}
+  .podium-3 .podium-block{color:#4a2c0f;}
+  .podium-school{ font-size:11.5px; font-weight:700; margin-top:8px; line-height:1.25;}
+  .podium-pts{ font-size:10.5px; color:var(--text-soft); margin-top:2px;}
+
+  .medal-table{ width:100%; border-collapse:collapse; }
+  .medal-table thead th{
+    font-family:'Oswald',sans-serif; font-size:10px; text-transform:uppercase; letter-spacing:0.05em;
+    color:var(--text-soft); font-weight:600; padding:8px 6px; text-align:center;
+    border-bottom:1px solid var(--line);
+  }
+  .medal-table thead th:first-child, .medal-table tbody td:first-child{text-align:left; padding-left:12px;}
+  .medal-table tbody td{
+    padding:10px 6px; text-align:center; font-size:13px; border-bottom:1px solid #F0F2F6;
+  }
+  .medal-table tbody tr:last-child td{border-bottom:none;}
+  .medal-table .pos-num{ font-family:'Archivo Black',sans-serif; font-size:13px; color:var(--navy-700); width:22px; display:inline-block;}
+  .medal-table .sch-name{font-weight:700; font-size:12.5px;}
+  .medal-gold{color:#C99700; font-weight:700;}
+  .medal-silver{color:#7a8694; font-weight:700;}
+  .medal-bronze{color:#A86327; font-weight:700;}
+  .medal-total{font-weight:800; color:var(--navy-800);}
+
+  /* ---------- Historico ---------- */
+  .year-pills{ display:flex; gap:8px; overflow-x:auto; padding-bottom:4px; margin-bottom:14px;}
+  .accordion-item{
+    background:#fff; border:1px solid var(--line); border-radius:14px; margin-bottom:10px; overflow:hidden;
+  }
+  .acc-head{
+    display:flex; justify-content:space-between; align-items:center;
+    padding:13px 14px; cursor:pointer;
+  }
+  .acc-head .an{font-weight:700; font-size:13.5px;}
+  .acc-head .ac{font-size:11.5px; color:var(--text-soft); margin-top:1px;}
+  .acc-chev{ transition:transform .2s; color:var(--text-soft); flex-shrink:0;}
+  .accordion-item.open .acc-chev{ transform:rotate(180deg);}
+  .acc-body{ display:none; padding:0 14px 14px;}
+  .accordion-item.open .acc-body{ display:block;}
+  .hist-row{
+    display:flex; align-items:center; gap:10px; padding:8px 0;
+    border-top:1px solid #F0F2F6;
+  }
+  .hist-row:first-child{border-top:none;}
+
+  /* ---------- Galeria ---------- */
+  .gallery-grid{
+    display:grid; grid-template-columns:1fr 1fr; gap:8px;
+  }
+  .gallery-grid .gph{
+    border-radius:13px; overflow:hidden; position:relative; aspect-ratio:1/1;
+    background:var(--navy-100);
+  }
+  .gallery-grid .gph img{ width:100%; height:100%; object-fit:cover; display:block;}
+  .gallery-grid .gph .cap{
+    position:absolute; bottom:0; left:0; right:0;
+    background:linear-gradient(180deg, transparent, rgba(8,29,51,0.85));
+    color:#fff; font-size:10.5px; font-weight:600; padding:16px 8px 7px;
+  }
+  .gallery-grid .gph.wide{ grid-column:span 2; aspect-ratio:2/1.1;}
+
+  .filter-chips{ display:flex; gap:7px; overflow-x:auto; padding-bottom:4px; margin-bottom:14px;}
+  .chip{
+    flex-shrink:0; padding:7px 13px; border-radius:100px; background:#fff;
+    border:1px solid var(--line); font-size:12px; font-weight:600; color:var(--text-soft);
+    white-space:nowrap; cursor:pointer;
+  }
+  .chip.active{ background:var(--navy-100); color:var(--navy-700); border-color:var(--navy-100);}
+
+  /* lightbox */
+  .lightbox{
+    position:fixed; inset:0; background:rgba(5,12,22,0.92); z-index:200;
+    display:none; align-items:center; justify-content:center; padding:20px;
+  }
+  .lightbox.open{display:flex;}
+  .lightbox img{ max-width:100%; max-height:80vh; border-radius:12px;}
+  .lightbox-close{
+    position:absolute; top:18px; right:18px; width:36px;height:36px;
+    background:rgba(255,255,255,0.12); border-radius:50%; border:none;
+    display:flex; align-items:center; justify-content:center; cursor:pointer;
+  }
+
+  /* ---------- Empty/util ---------- */
+  .muted-note{
+    font-size:11.5px; color:var(--text-soft); text-align:center; padding:14px 10px;
+  }
+  .school-search{
+    width:100%; padding:11px 14px; border-radius:13px; border:1px solid var(--line);
+    background:#fff; font-size:13.5px; font-family:'Inter',sans-serif; margin-bottom:14px;
+  }
+  .school-search:focus{ outline:2px solid var(--navy-600); }
+
+  ::-webkit-scrollbar{display:none;}
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- ===================== TOP BAR ===================== -->
+  <div class="topbar">
+    <svg class="mountains-bg" viewBox="0 0 400 60" preserveAspectRatio="none"><path fill="#FFFFFF" d="M0,60 L40,20 L70,42 L110,8 L150,38 L190,15 L230,45 L270,22 L310,48 L350,18 L400,40 L400,60 Z"/></svg>
+    <div class="topbar-row">
+      <div class="brand">
+        <div class="brand-mark">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M12 2C12 2 8 7 8 11.5C8 14 9.5 16 12 16C14.5 16 16 14 16 11.5C16 9.8 15 8 14 6.5C14 8 13 9 12 9C11 9 11.5 7 11.5 6C11.5 4.5 12 3 12 2Z" fill="#0a2847"/></svg>
+        </div>
+        <div class="brand-text">
+          <div class="eyebrow">FEMVO &middot; 2026</div>
+          <div class="title">VII Olimpiadas</div>
+        </div>
+      </div>
+      <div class="live-pill" id="syncPill" onclick="manualRefresh()" style="cursor:pointer;">
+        <span class="flame-dot"><svg viewBox="0 0 24 24" fill="none"><path d="M12 2C12 2 8 7 8 11.5C8 14 9.5 16 12 16C14.5 16 16 14 16 11.5C16 9.8 15 8 14 6.5C14 8 13 9 12 9C11 9 11.5 7 11.5 6C11.5 4.5 12 3 12 2Z" fill="#FFD23F"/></svg></span>
+        <span id="syncIndicator">Sincronizando…</span>
+      </div>
+    </div>
+    <div class="topbar-sub">
+      <div>
+        <div class="page-title" id="screenTitle">Inicio</div>
+        <div class="page-sub" id="screenSub">Complejo Deportivo Valle del Olivo</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== CONTENT ===================== -->
+  <div class="content">
+
+    <!-- ---------- HOME ---------- -->
+    <section class="screen active" id="screen-home">
+
+      <div class="hero-card">
+        <svg class="mountains-bg" viewBox="0 0 400 60" preserveAspectRatio="none"><path fill="#FFFFFF" d="M0,60 L40,20 L70,42 L110,8 L150,38 L190,15 L230,45 L270,22 L310,48 L350,18 L400,40 L400,60 Z"/></svg>
+        <div class="hero-row">
+          <div>
+            <div class="hero-event">Ahora compitiendo</div>
+            <div class="hero-name">100m planos &mdash; Final Damas</div>
+          </div>
+          <div class="live-pill" style="background:rgba(255,210,63,0.16); border-color:rgba(255,210,63,0.4);">
+            <span class="flame-dot"><svg viewBox="0 0 24 24" fill="none"><path d="M12 2C12 2 8 7 8 11.5C8 14 9.5 16 12 16C14.5 16 16 14 16 11.5C16 9.8 15 8 14 6.5C14 8 13 9 12 9C11 9 11.5 7 11.5 6C11.5 4.5 12 3 12 2Z" fill="#FFD23F"/></svg></span>
+            Pista 1
+          </div>
+        </div>
+        <div class="hero-meta">
+          <span>🏟️ Pista oficial</span>
+          <span>👥 8 categorías</span>
+        </div>
+        <div class="hero-cta">
+          <button class="btn btn-gold" onclick="goTo('vivo')">Ver resultados en vivo</button>
+          <button class="btn btn-ghost" onclick="goTo('programa')">Programación</button>
+        </div>
+      </div>
+
+      <div class="stat-grid">
+        <div class="stat-box"><div class="num">12</div><div class="lbl">Colegios</div></div>
+        <div class="stat-box"><div class="num">38</div><div class="lbl">Pruebas</div></div>
+        <div class="stat-box"><div class="num">2</div><div class="lbl">Jornadas</div></div>
+      </div>
+
+      <div class="section-label">Sucediendo ahora</div>
+      <div class="live-now-card" onclick="goTo('vivo')">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none"><path d="M12 2C12 2 8 7 8 11.5C8 14 9.5 16 12 16C14.5 16 16 14 16 11.5C16 9.8 15 8 14 6.5C14 8 13 9 12 9C11 9 11.5 7 11.5 6C11.5 4.5 12 3 12 2Z" fill="#F2994A"/></svg></div>
+        <div class="info">
+          <div class="ev-name">100m planos &mdash; Final Damas</div>
+          <div class="ev-detail">Categoría 14-15 años &middot; Carril definido</div>
+        </div>
+        <svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+
+      <div class="section-label">Top 3 medallero</div>
+      <div class="top3-mini" id="homeTop3"></div>
+      <button class="btn btn-ghost" style="width:100%; justify-content:center; margin-top:10px; background:var(--navy-100); color:var(--navy-700); border:none;" onclick="goTo('medallero')">Ver medallero completo</button>
+
+    </section>
+
+    <!-- ---------- UBICACION ---------- -->
+    <section class="screen" id="screen-ubicacion">
+      <div class="map-frame">
+        <iframe loading="lazy" src="https://www.openstreetmap.org/export/embed.html?bbox=-71.245%2C-33.045%2C-71.225%2C-33.030&layer=mapnik&marker=-33.0375%2C-71.235"></iframe>
+      </div>
+      <div class="card venue-card">
+        <div class="row">
+          <div class="icowrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-6.2-7-11a7 7 0 1 1 14 0c0 4.8-7 11-7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg></div>
+          <div>
+            <div class="t">Complejo Deportivo Valle del Olivo</div>
+            <div class="d">Av. Los Olivos 1450, Quillota &middot; Pista oficial de 8 carriles</div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="icowrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg></div>
+          <div>
+            <div class="t">Horario del encuentro</div>
+            <div class="d">Sábado 27 y domingo 28 de junio &middot; 9:00 a 18:30 hrs</div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="icowrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l18-7-7 18-3-7-8-4Z"/></svg></div>
+          <div>
+            <div class="t">Cómo llegar</div>
+            <div class="d">Acceso principal por Av. Los Olivos. Estacionamiento habilitado en portón 2.</div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="icowrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 9h18"/></svg></div>
+          <div>
+            <div class="t">Servicios en el recinto</div>
+            <div class="d">Enfermería, cafetería, baños y zona de hidratación junto a tribuna norte.</div>
+          </div>
+        </div>
+      </div>
+      <button class="btn btn-gold" style="width:100%; justify-content:center; margin-top:14px;" onclick="window.open('https://www.google.com/maps/search/?api=1&query=-33.0375,-71.235','_blank')">Abrir en Google Maps</button>
+    </section>
+
+    <!-- ---------- PROGRAMACION ---------- -->
+    <section class="screen" id="screen-programa">
+      <div class="day-pills" id="dayPills"></div>
+      <div class="timeline" id="timelineWrap"></div>
+    </section>
+
+    <!-- ---------- EN VIVO / RESULTADOS ---------- -->
+    <section class="screen" id="screen-vivo">
+      <div class="seg-tabs">
+        <button class="seg-tab active" data-tab="live" onclick="setVivoTab('live')">En vivo</button>
+        <button class="seg-tab" data-tab="final" onclick="setVivoTab('final')">Finalizadas</button>
+        <button class="seg-tab" data-tab="historico" onclick="setVivoTab('historico')">Históricas</button>
+      </div>
+
+      <div id="vivoLive"></div>
+      <div id="vivoFinal" style="display:none;"></div>
+
+      <div id="vivoHistorico" style="display:none;">
+        <div class="year-pills" id="yearPills"></div>
+        <div id="historicoList"></div>
+      </div>
+    </section>
+
+    <!-- ---------- MEDALLERO ---------- -->
+    <section class="screen" id="screen-medallero">
+      <div class="podium-wrap" id="podiumWrap"></div>
+      <div class="section-label">Tabla general por colegio</div>
+      <div class="card">
+        <table class="medal-table">
+          <thead>
+            <tr><th>Colegio</th><th>🥇</th><th>🥈</th><th>🥉</th><th>Total</th></tr>
+          </thead>
+          <tbody id="medalTableBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ---------- GALERIA ---------- -->
+    <section class="screen" id="screen-galeria">
+      <div class="filter-chips" id="galleryFilters"></div>
+      <div class="gallery-grid" id="galleryGrid"></div>
+    </section>
+
+  </div>
+
+  <!-- ===================== BOTTOM NAV ===================== -->
+  <div class="bottom-nav">
+    <button class="nav-btn active" data-screen="home" onclick="goTo('home')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l9-7 9 7"/><path d="M5 10v9a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1v-9"/></svg>
+      Inicio<span class="nav-dot"></span>
+    </button>
+    <button class="nav-btn" data-screen="ubicacion" onclick="goTo('ubicacion')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-6.2-7-11a7 7 0 1 1 14 0c0 4.8-7 11-7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg>
+      Ubicación<span class="nav-dot"></span>
+    </button>
+    <button class="nav-btn" data-screen="programa" onclick="goTo('programa')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg>
+      Programa<span class="nav-dot"></span>
+    </button>
+    <button class="nav-btn" data-screen="vivo" onclick="goTo('vivo')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2C12 2 8 7 8 11.5C8 14 9.5 16 12 16C14.5 16 16 14 16 11.5C16 9.8 15 8 14 6.5C14 8 13 9 12 9C11 9 11.5 7 11.5 6C11.5 4.5 12 3 12 2Z"/><path d="M7 21h10"/></svg>
+      En vivo<span class="nav-dot"></span>
+    </button>
+    <button class="nav-btn" data-screen="medallero" onclick="goTo('medallero')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="5"/><path d="M8.5 12.5L6 21l6-3 6 3-2.5-8.5"/></svg>
+      Medallas<span class="nav-dot"></span>
+    </button>
+    <button class="nav-btn" data-screen="galeria" onclick="goTo('galeria')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+      Fotos<span class="nav-dot"></span>
+    </button>
+  </div>
+
+</div>
+
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <button class="lightbox-close" onclick="closeLightbox(event)">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+  </button>
+  <img id="lightboxImg" src="" alt="">
+</div>
+
+<script src="data.js"></script>
+<script src="sheets-loader.js"></script>
+<script src="render.js"></script>
+</body>
+</html>

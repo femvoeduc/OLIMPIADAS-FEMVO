@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400">
+  <defs>
+    <linearGradient id="flame4" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FFE873"/>
+      <stop offset="45%" stop-color="#FFD23F"/>
+      <stop offset="100%" stop-color="#E8622C"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="400" fill="#0a2847"/>
+  <path d="M0,400 L0,310 L80,250 L150,300 L220,220 L300,290 L400,240 L400,400 Z" fill="#0c3560" opacity="0.6"/>
+  <!-- torch -->
+  <rect x="190" y="220" width="20" height="120" fill="#0a2847" stroke="#FFFFFF" stroke-opacity="0.15"/>
+  <path d="M180,220 Q200,200 220,220 L210,235 L190,235 Z" fill="#081d33"/>
+  <path d="M200,210 C190,190 195,170 200,150 C205,170 195,180 205,195 C215,180 205,165 212,145 C222,165 218,185 200,210Z" fill="url(#flame4)"/>
+  <!-- crowd dots -->
+  <g fill="#FFFFFF" opacity="0.5">
+    <circle cx="60" cy="350" r="6"/><circle cx="90" cy="360" r="6"/><circle cx="120" cy="352" r="6"/>
+    <circle cx="280" cy="355" r="6"/><circle cx="310" cy="348" r="6"/><circle cx="340" cy="358" r="6"/>
+  </g>
+</svg>

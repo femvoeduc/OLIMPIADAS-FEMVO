@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400">
+  <rect width="400" height="400" fill="#081d33"/>
+  <path d="M0,400 L0,300 L60,250 L120,290 L180,220 L250,280 L310,230 L400,270 L400,400 Z" fill="#0c3560" opacity="0.6"/>
+  <!-- podium blocks -->
+  <rect x="60" y="260" width="90" height="60" fill="#AAB5C2"/>
+  <rect x="155" y="200" width="90" height="120" fill="#FFD23F"/>
+  <rect x="250" y="280" width="90" height="40" fill="#C57A3F"/>
+  <text x="105" y="298" text-anchor="middle" font-family="Arial Black, sans-serif" font-size="34" fill="#3a4756">2</text>
+  <text x="200" y="270" text-anchor="middle" font-family="Arial Black, sans-serif" font-size="40" fill="#5c4500">1</text>
+  <text x="295" y="308" text-anchor="middle" font-family="Arial Black, sans-serif" font-size="28" fill="#4a2c0f">3</text>
+  <!-- confetti -->
+  <g fill="#FFD23F" opacity="0.9">
+    <rect x="40" y="40" width="6" height="14" transform="rotate(20 43 47)"/>
+    <rect x="350" y="60" width="6" height="14" transform="rotate(-15 353 67)"/>
+    <rect x="320" y="120" width="6" height="14" transform="rotate(40 323 127)"/>
+  </g>
+  <g fill="#F2994A" opacity="0.9">
+    <rect x="70" y="100" width="6" height="14" transform="rotate(-25 73 107)"/>
+    <rect x="280" y="50" width="6" height="14" transform="rotate(10 283 57)"/>
+  </g>
+</svg>
