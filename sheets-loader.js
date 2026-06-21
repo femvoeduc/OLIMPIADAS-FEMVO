@@ -8,7 +8,7 @@
 // https://docs.google.com/spreadsheets/d/ESTE_ES_EL_ID/edit
 // ============================================================
 
-const SHEET_ID = "17o0lNkUjbkWUZrsRujEhkd6WZwqeyahG";
+const SHEET_ID = "PEGA_AQUI_TU_SHEET_ID";
 
 // No tocar: construye la URL de lectura para cada pestaña
 function sheetUrl(tabName){
@@ -40,7 +40,9 @@ async function fetchSheetTab(tabName){
 
 function buildMedalTable(rows){
   return rows
-    .filter(r => r.Colegio)
+    .filter(r => r.Colegio && String(r.Colegio).trim() !== '')
+    // Ignora filas de nota/ayuda accidentales (frases largas no son nombres de colegio reales)
+    .filter(r => String(r.Colegio).trim().length <= 60)
     .map(r => ({
       school: String(r.Colegio).trim(),
       gold: Number(r.Oro) || 0,
@@ -57,7 +59,9 @@ function buildSchedule(rows){
     "Domingo": { label:"Dom", date:"" },
   };
   const schedule = {};
-  rows.filter(r => r.Dia).forEach(r => {
+  rows
+    .filter(r => r.Dia && String(r.Dia).trim().length <= 20)
+    .forEach(r => {
     const dayKey = String(r.Dia).trim();
     if(!schedule[dayKey]){
       const meta = dayMeta[dayKey] || { label: dayKey.slice(0,3), date:"" };
@@ -76,7 +80,9 @@ function buildSchedule(rows){
 
 function buildLiveAndFinal(rows){
   const grouped = {};
-  rows.filter(r => r.Prueba).forEach(r => {
+  rows
+    .filter(r => r.Prueba && String(r.Prueba).trim().length <= 80)
+    .forEach(r => {
     const key = r.Prueba + "||" + r.Categoria;
     if(!grouped[key]){
       grouped[key] = {
@@ -103,7 +109,9 @@ function buildLiveAndFinal(rows){
 
 function buildHistorico(rows){
   const byYear = {};
-  rows.filter(r => r.Anio).forEach(r => {
+  rows
+    .filter(r => r.Anio && String(r.Prueba || '').trim().length <= 80)
+    .forEach(r => {
     const year = String(r.Anio).trim();
     if(!byYear[year]) byYear[year] = {};
     const evKey = String(r.Prueba).trim();
@@ -125,11 +133,13 @@ function buildHistorico(rows){
 }
 
 function buildGallery(rows){
-  return rows.filter(r => r.URL_Imagen).map(r => ({
-    url: String(r.URL_Imagen).trim(),
-    cap: String(r.Descripcion || '').trim(),
-    filter: String(r.Categoria || 'general').trim().toLowerCase(),
-  }));
+  return rows
+    .filter(r => r.URL_Imagen && String(r.URL_Imagen).trim().startsWith('http'))
+    .map(r => ({
+      url: String(r.URL_Imagen).trim(),
+      cap: String(r.Descripcion || '').trim(),
+      filter: String(r.Categoria || 'general').trim().toLowerCase(),
+    }));
 }
 
 function buildInfo(rows){
