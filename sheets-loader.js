@@ -17,6 +17,12 @@ function sheetUrl(tabName){
 
 // Google envuelve el JSON en "google.visualization.Query.setResponse(...)"
 // Esta función limpia ese envoltorio y devuelve filas como arreglos de objetos simples.
+//
+// Nota importante: Google solo marca la fila 1 como "encabezado" si esa fila
+// está inmovilizada/congelada (Ver → Inmovilizar → 1 fila) en Sheets. Si no lo está,
+// los nombres de columna llegan vacíos (o como "A","B","C"...) y la fila 1 real
+// aparece como un dato más. Para que la app funcione sin depender de ese detalle
+// de formato, detectamos ese caso y usamos la primera fila como encabezados a mano.
 async function fetchSheetTab(tabName){
   const res = await fetch(sheetUrl(tabName));
   const text = await res.text();
@@ -24,8 +30,18 @@ async function fetchSheetTab(tabName){
   const jsonEnd = text.lastIndexOf('}');
   const data = JSON.parse(text.substring(jsonStart, jsonEnd + 1));
 
-  const cols = data.table.cols.map(c => (c.label || c.id || '').trim());
-  const rows = data.table.rows.map(r => {
+  let cols = data.table.cols.map(c => (c.label || '').trim());
+  let dataRows = data.table.rows;
+
+  // ¿Google no detectó encabezados? (labels vacíos o genéricos tipo "A","B","C")
+  const looksGeneric = cols.every((c, i) => c === '' || c === String.fromCharCode(65 + i));
+  if(looksGeneric && dataRows.length){
+    // Usamos la primera fila de datos como encabezados reales, y la quitamos del resultado
+    cols = dataRows[0].c.map(cell => (cell ? String(cell.v).trim() : ''));
+    dataRows = dataRows.slice(1);
+  }
+
+  const rows = dataRows.map(r => {
     const obj = {};
     cols.forEach((colName, i) => {
       const cell = r.c[i];
