@@ -245,7 +245,7 @@ function renderActivityIconInto(elementId, activityName){
   const el = document.getElementById(elementId);
   if(!el) return;
   const icon = getActivityIcon(activityName);
-  el.innerHTML = `<svg viewBox="0 0 24 24" fill="none" style="color:${icon.color}">${icon.svg}</svg>`;
+  el.innerHTML = `<svg viewBox="0 0 24 24" fill="none" style="width:100%;height:100%;color:${icon.color}">${icon.svg}</svg>`;
 }
 
 function renderHomeNowCompeting(){
@@ -265,6 +265,7 @@ function renderHomeNowCompeting(){
     if(heroCard) heroCard.style.display = '';
     if(liveNowCard) liveNowCard.style.display = '';
     renderActivityIconInto('liveNowIcon', current.name);
+    renderActivityIconInto('heroIconWrap', current.name);
   } else {
     // No hay ninguna prueba EnVivo en este momento
     if(heroCard) heroCard.style.display = 'none';
@@ -421,6 +422,14 @@ function renderHistoricoList(){
     wrap.innerHTML = `<div class="muted-note">Aún no hay resultados históricos cargados.</div>`;
     return;
   }
+  // Si falta algún puesto (1°, 2° o 3°) en una fila de la planilla, mostramos un
+  // placeholder en vez de romper toda la pantalla — así una fila incompleta no
+  // afecta al resto de los resultados históricos.
+  function podiumRow(pos, posClass, data){
+    const athlete = (data && data.athlete) ? data.athlete : '—';
+    const school = (data && data.school) ? data.school : 'Sin datos aún';
+    return `<div class="hist-row"><div class="pos-chip ${posClass}">${pos}</div><div class="who"><div class="athlete">${athlete}</div><div class="school">${school}</div></div></div>`;
+  }
   wrap.innerHTML = events.map((ev,idx)=>`
     <div class="accordion-item" id="acc-${idx}">
       <div class="acc-head" onclick="toggleAcc(${idx})">
@@ -431,9 +440,9 @@ function renderHistoricoList(){
         <svg class="acc-chev" width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </div>
       <div class="acc-body">
-        <div class="hist-row"><div class="pos-chip p1">1</div><div class="who"><div class="athlete">${ev.first.athlete}</div><div class="school">${ev.first.school}</div></div></div>
-        <div class="hist-row"><div class="pos-chip p2">2</div><div class="who"><div class="athlete">${ev.second.athlete}</div><div class="school">${ev.second.school}</div></div></div>
-        <div class="hist-row"><div class="pos-chip p3">3</div><div class="who"><div class="athlete">${ev.third.athlete}</div><div class="school">${ev.third.school}</div></div></div>
+        ${podiumRow(1, 'p1', ev.first)}
+        ${podiumRow(2, 'p2', ev.second)}
+        ${podiumRow(3, 'p3', ev.third)}
       </div>
     </div>
   `).join('');
@@ -527,23 +536,31 @@ async function manualRefresh(){
 }
 
 // ---------------- INIT ----------------
+// Cada función de renderizado se ejecuta dentro de su propio try/catch.
+// Así, si una sola pestaña de la planilla tiene un dato incompleto o con
+// formato inesperado, esa sección puede fallar sin tumbar las demás
+// (medallero, programación, etc.) ni dejar pegado el indicador de sincronización.
+function safeRender(fn, label){
+  try { fn(); }
+  catch(err){ console.warn(`No se pudo actualizar "${label}":`, err); }
+}
 function initApp(){
-  applyEventInfo();
-  renderCountdown();
-  renderHomeStats();
-  renderHomeNowCompeting();
-  renderHomeTop3();
-  renderDayPills();
-  renderTimeline();
-  renderVivoLive();
-  renderVivoFinal();
-  renderYearPills();
-  renderHistoricoList();
-  renderPodium();
-  renderMedalTable();
-  renderGalleryFilters();
-  renderGalleryGrid();
-  renderSyncIndicator();
+  safeRender(applyEventInfo, 'Información del evento');
+  safeRender(renderCountdown, 'Cuenta regresiva');
+  safeRender(renderHomeStats, 'Estadísticas de inicio');
+  safeRender(renderHomeNowCompeting, 'Ahora compitiendo');
+  safeRender(renderHomeTop3, 'Top 3 medallero');
+  safeRender(renderDayPills, 'Días de programación');
+  safeRender(renderTimeline, 'Programación');
+  safeRender(renderVivoLive, 'Resultados en vivo');
+  safeRender(renderVivoFinal, 'Resultados finalizados');
+  safeRender(renderYearPills, 'Años históricos');
+  safeRender(renderHistoricoList, 'Resultados históricos');
+  safeRender(renderPodium, 'Podio');
+  safeRender(renderMedalTable, 'Tabla de medallero');
+  safeRender(renderGalleryFilters, 'Filtros de galería');
+  safeRender(renderGalleryGrid, 'Galería de fotos');
+  safeRender(renderSyncIndicator, 'Indicador de sincronización');
 }
 document.addEventListener('DOMContentLoaded', () => {
   // 1. Muestra de inmediato los datos de ejemplo (data.js) para que la app
