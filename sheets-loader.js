@@ -8,7 +8,7 @@
 // https://docs.google.com/spreadsheets/d/ESTE_ES_EL_ID/edit
 // ============================================================
 
-const SHEET_ID = "17o0lNkUjbkWUZrsRujEhkd6WZwqeyahG";
+const SHEET_ID = "1ip5Z7rn_jA7yEElOcxUVQ85eyvoc_RRY";
 
 // No tocar: construye la URL de lectura para cada pestaña
 function sheetUrl(tabName){
