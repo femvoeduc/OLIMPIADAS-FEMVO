@@ -166,6 +166,16 @@ function buildInfo(rows){
   return info;
 }
 
+function buildVenueServices(rows){
+  return rows
+    .filter(r => r.Servicio && String(r.Servicio).trim() !== '')
+    .map(r => ({
+      name: String(r.Servicio).trim(),
+      sector: String(r.Sector || '').trim(),
+      icon: String(r.Icono || 'acceso').trim().toLowerCase(),
+    }));
+}
+
 // ---------- Carga principal ----------
 // Se ejecuta al abrir la app. Si Google Sheets no responde
 // (sin internet, planilla no compartida, etc.), se mantienen
@@ -173,13 +183,14 @@ function buildInfo(rows){
 
 async function loadFromSheets(){
   try {
-    const [medalRows, schedRows, liveRows, histRows, galRows, infoRows] = await Promise.all([
+    const [medalRows, schedRows, liveRows, histRows, galRows, infoRows, servRows] = await Promise.all([
       fetchSheetTab("Medallero"),
       fetchSheetTab("Programacion"),
       fetchSheetTab("EnVivo"),
       fetchSheetTab("Historico"),
       fetchSheetTab("Galeria"),
       fetchSheetTab("Info"),
+      fetchSheetTab("Servicios"),
     ]);
 
     if(medalRows.length) MEDAL_TABLE = buildMedalTable(medalRows);
@@ -192,6 +203,7 @@ async function loadFromSheets(){
     if(histRows.length) HISTORICAL = buildHistorico(histRows);
     if(galRows.length) GALLERY = buildGallery(galRows);
     if(infoRows.length) window.EVENT_INFO = buildInfo(infoRows);
+    if(servRows.length) VENUE_SERVICES = buildVenueServices(servRows);
 
     return true;
   } catch (err){

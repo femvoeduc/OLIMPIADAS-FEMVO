@@ -42,14 +42,76 @@ function applyEventInfo(){
     const lat = parseFloat(info.MapaLat), lng = parseFloat(info.MapaLng);
     const iframe = document.querySelector('.map-frame iframe');
     if(iframe && !isNaN(lat) && !isNaN(lng)){
-      const d = 0.01;
-      iframe.src = `https://www.openstreetmap.org/export/embed.html?bbox=${lng-d}%2C${lat-d}%2C${lng+d}%2C${lat+d}&layer=mapnik&marker=${lat}%2C${lng}`;
+      const coordKey = `${lat},${lng}`;
+      // Solo recarga el mapa si las coordenadas cambiaron desde la última vez que se aplicaron
+      // (evita que el iframe parpadee cada 30s si los datos no han cambiado).
+      if(iframe.dataset.coordKey !== coordKey){
+        iframe.dataset.coordKey = coordKey;
+        iframe.src = `https://maps.google.com/maps?q=${lat},${lng}&z=16&output=embed`;
+      }
     }
+    // Guardamos las coordenadas para usarlas al abrir Google Maps / Waze desde "Cómo llegar"
+    window.VENUE_COORDS = { lat, lng };
   }
-  if(info.LinkMaps){
-    const btn = document.querySelector('#screen-ubicacion .btn-gold');
-    if(btn) btn.setAttribute('onclick', `window.open('${info.LinkMaps}','_blank')`);
+  if(info.ComoLlegarTexto){
+    const el = document.getElementById('comoLlegarText');
+    if(el) el.textContent = info.ComoLlegarTexto;
   }
+}
+
+// ---------------- UBICACIÓN: "Cómo llegar" (abrir en Maps o Waze) ----------------
+function openComoLlegarMenu(){
+  const coords = window.VENUE_COORDS || { lat: -36.81494, lng: -73.02377 }; // Estadio Ester Roa por defecto
+  const choice = window.confirm(
+    "¿Cómo quieres llegar?\n\nAceptar = Abrir en Google Maps\nCancelar = Abrir en Waze"
+  );
+  if(choice){
+    window.open(`https://www.google.com/maps/search/?api=1&query=${coords.lat},${coords.lng}`, '_blank');
+  } else {
+    window.open(`https://waze.com/ul?ll=${coords.lat},${coords.lng}&navigate=yes`, '_blank');
+  }
+}
+
+// ---------------- UBICACIÓN: Servicios del recinto por sector ----------------
+const SERVICE_ICONS = {
+  bano: '<path d="M5 4v16M19 4v16M5 9h14M9 9V4M15 9V4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>',
+  enfermeria: '<rect x="3" y="3" width="18" height="18" rx="3" stroke="currentColor" stroke-width="1.8" fill="none"/><path d="M12 7v10M7 12h10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>',
+  alimentacion: '<path d="M5 11h14a1 1 0 0 1 1 1v1a6 6 0 0 1-6 6H10a6 6 0 0 1-6-6v-1a1 1 0 0 1 1-1z" fill="currentColor"/><path d="M7 11V7a2 2 0 0 1 4 0M11 11V6a2 2 0 0 1 4 0v5" stroke="currentColor" stroke-width="1.5" fill="none"/>',
+  hidratacion: '<path d="M12 2C12 2 6 10 6 15a6 6 0 0 0 12 0c0-5-6-13-6-13z" fill="currentColor"/>',
+  delegaciones: '<circle cx="9" cy="8" r="3" stroke="currentColor" stroke-width="1.8" fill="none"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round"/><circle cx="17" cy="8" r="2.5" stroke="currentColor" stroke-width="1.6" fill="none" opacity="0.6"/><path d="M15 14c2.8.3 5 2.7 5 6" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" opacity="0.6"/>',
+  acceso: '<path d="M12 21s-7-6.2-7-11a7 7 0 1 1 14 0c0 4.8-7 11-7 11Z" stroke="currentColor" stroke-width="1.8" fill="none"/><circle cx="12" cy="10" r="2.5" stroke="currentColor" stroke-width="1.8" fill="none"/>',
+};
+function serviceIconSVG(iconKey){
+  return SERVICE_ICONS[iconKey] || SERVICE_ICONS['acceso'];
+}
+function renderServiciosPanel(){
+  const panel = document.getElementById('serviciosPanel');
+  if(!panel) return;
+  const services = VENUE_SERVICES || [];
+  if(!services.length){
+    panel.innerHTML = `<div class="muted-note">Aún no hay servicios cargados para este recinto.</div>`;
+    return;
+  }
+  panel.innerHTML = services.map(s => `
+    <div style="display:flex; align-items:center; gap:12px; padding:10px 0; border-top:1px solid #F0F2F6;">
+      <div style="width:34px;height:34px;border-radius:10px;background:var(--navy-100);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" style="color:var(--navy-700);">${serviceIconSVG(s.icon)}</svg>
+      </div>
+      <div style="flex:1;">
+        <div style="font-weight:700; font-size:13px;">${s.name}</div>
+      </div>
+      <div style="font-size:11.5px; font-weight:700; color:var(--navy-700); background:var(--navy-100); padding:4px 10px; border-radius:100px; flex-shrink:0;">${s.sector}</div>
+    </div>
+  `).join('');
+}
+function toggleServicios(){
+  const panel = document.getElementById('serviciosPanel');
+  const chev = document.getElementById('serviciosChev');
+  if(!panel) return;
+  const isOpen = panel.style.display === 'block';
+  panel.style.display = isOpen ? 'none' : 'block';
+  if(chev) chev.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(180deg)';
+  if(!isOpen) renderServiciosPanel();
 }
 
 function goTo(screen){
@@ -63,6 +125,67 @@ function goTo(screen){
 }
 
 // ---------------- HOME: estadísticas y "ahora compitiendo" (calculados desde los datos reales) ----------------
+// ---------------- HOME: cuenta regresiva al inicio del evento ----------------
+// Lee la fecha/hora de inicio desde la pestaña Info (campo FechaInicioCuenta,
+// formato AAAA-MM-DD HH:MM:SS) y muestra un contador en vivo. Una vez que esa
+// fecha ya pasó, el contador se oculta y se muestra la tarjeta normal de "ahora compitiendo".
+let countdownInterval = null;
+
+function pad2(n){ return String(n).padStart(2,'0'); }
+
+function startCountdown(targetDate){
+  const card = document.getElementById('countdownCard');
+  const heroCard = document.getElementById('heroCard');
+  if(!card) return;
+
+  if(countdownInterval) clearInterval(countdownInterval);
+
+  function tick(){
+    const now = new Date();
+    const diff = targetDate - now;
+    if(diff <= 0){
+      // El evento ya comenzó: ocultamos el contador y dejamos la tarjeta normal visible
+      card.style.display = 'none';
+      clearInterval(countdownInterval);
+      return;
+    }
+    card.style.display = 'block';
+    const days = Math.floor(diff / (1000*60*60*24));
+    const hours = Math.floor((diff / (1000*60*60)) % 24);
+    const mins = Math.floor((diff / (1000*60)) % 60);
+    const secs = Math.floor((diff / 1000) % 60);
+    const elD = document.getElementById('cdDays');
+    const elH = document.getElementById('cdHours');
+    const elM = document.getElementById('cdMins');
+    const elS = document.getElementById('cdSecs');
+    if(elD) elD.textContent = pad2(days);
+    if(elH) elH.textContent = pad2(hours);
+    if(elM) elM.textContent = pad2(mins);
+    if(elS) elS.textContent = pad2(secs);
+  }
+
+  tick();
+  countdownInterval = setInterval(tick, 1000);
+}
+
+function renderCountdown(){
+  const info = window.EVENT_INFO;
+  const dateText = document.getElementById('countdownDate');
+  // Valor por defecto: 1 de octubre de 2026, 8:30 hrs (según lo informado para este evento)
+  let targetStr = (info && info.FechaInicioCuenta) ? String(info.FechaInicioCuenta).trim() : '2026-10-01 08:30:00';
+  const target = new Date(targetStr.replace(' ', 'T'));
+  if(isNaN(target.getTime())){
+    const card = document.getElementById('countdownCard');
+    if(card) card.style.display = 'none';
+    return;
+  }
+  if(dateText){
+    const opciones = { day:'numeric', month:'long', hour:'2-digit', minute:'2-digit' };
+    dateText.textContent = target.toLocaleDateString('es-CL', opciones).replace(',', ' ·') + ' hrs';
+  }
+  startCountdown(target);
+}
+
 function renderHomeStats(){
   // Colegios: cuenta filas reales del medallero
   const statColegios = document.getElementById('statColegios');
@@ -78,6 +201,51 @@ function renderHomeStats(){
   // Jornadas: cantidad de días distintos en la programación
   const statJornadas = document.getElementById('statJornadas');
   if(statJornadas) statJornadas.textContent = Object.keys(SCHEDULE).length;
+}
+
+// ---------------- Íconos contextuales según tipo de actividad ----------------
+// Detecta palabras clave en el nombre/categoría de una prueba y devuelve el
+// SVG e ícono de fondo adecuados (ceremonia, almuerzo, carrera, salto, lanzamiento, relevo...)
+const ACTIVITY_ICONS = [
+  { keywords: ['apertura', 'ceremonia', 'inauguracion', 'inauguración', 'cierre', 'clausura', 'premiacion', 'premiación'],
+    color: '#FFD23F',
+    svg: '<path d="M12 2L4 7v2l8 4 8-4V7l-8-5z" fill="currentColor"/><path d="M4 11v6l8 4 8-4v-6l-8 4-8-4z" fill="currentColor" opacity="0.6"/>' },
+  { keywords: ['almuerzo', 'receso', 'colación', 'colacion', 'break'],
+    color: '#F2994A',
+    svg: '<path d="M5 11h14a1 1 0 0 1 1 1v1a6 6 0 0 1-6 6H10a6 6 0 0 1-6-6v-1a1 1 0 0 1 1-1z" fill="currentColor"/><path d="M7 11V7a2 2 0 0 1 4 0M11 11V6a2 2 0 0 1 4 0v5" stroke="currentColor" stroke-width="1.5" fill="none"/>' },
+  { keywords: ['salto alto', 'salto largo', 'salto triple', 'salto'],
+    color: '#10477f',
+    svg: '<path d="M3 20h6M15 4l4 4-9 9-4-4 9-9z" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>' },
+  { keywords: ['lanzamiento', 'bala', 'jabalina', 'disco', 'martillo'],
+    color: '#0c3560',
+    svg: '<circle cx="7" cy="7" r="3" fill="currentColor"/><path d="M9 9l10 10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>' },
+  { keywords: ['relevo', 'posta', '4x100', '4 x 100', '4x400', '4 x 400'],
+    color: '#F2994A',
+    svg: '<path d="M4 17l5-5-5-5M11 17l5-5-5-5" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 7h3v3M17 17h3v-3" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>' },
+  { keywords: ['vallas', '110m', '100m vallas', '400m vallas'],
+    color: '#10477f',
+    svg: '<path d="M2 18h20M6 18V10M6 10h0M10 18v-8M14 18v-8M18 18v-8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M4 10h4M8 10h4M12 10h4M16 10h4" stroke="currentColor" stroke-width="2"/>' },
+];
+const DEFAULT_ACTIVITY_ICON = {
+  color: '#F2994A',
+  svg: '<path d="M12 2C12 2 8 7 8 11.5C8 14 9.5 16 12 16C14.5 16 16 14 16 11.5C16 9.8 15 8 14 6.5C14 8 13 9 12 9C11 9 11.5 7 11.5 6C11.5 4.5 12 3 12 2Z" fill="currentColor"/>'
+};
+
+function getActivityIcon(name){
+  const lower = (name || '').toLowerCase();
+  for(const entry of ACTIVITY_ICONS){
+    if(entry.keywords.some(kw => lower.includes(kw))){
+      return entry;
+    }
+  }
+  return DEFAULT_ACTIVITY_ICON;
+}
+
+function renderActivityIconInto(elementId, activityName){
+  const el = document.getElementById(elementId);
+  if(!el) return;
+  const icon = getActivityIcon(activityName);
+  el.innerHTML = `<svg viewBox="0 0 24 24" fill="none" style="color:${icon.color}">${icon.svg}</svg>`;
 }
 
 function renderHomeNowCompeting(){
@@ -96,6 +264,7 @@ function renderHomeNowCompeting(){
     if(liveNowDetail) liveNowDetail.textContent = current.cat;
     if(heroCard) heroCard.style.display = '';
     if(liveNowCard) liveNowCard.style.display = '';
+    renderActivityIconInto('liveNowIcon', current.name);
   } else {
     // No hay ninguna prueba EnVivo en este momento
     if(heroCard) heroCard.style.display = 'none';
@@ -105,6 +274,7 @@ function renderHomeNowCompeting(){
       if(liveNowName) liveNowName.textContent = 'Sin pruebas en vivo por ahora';
       if(liveNowDetail) liveNowDetail.textContent = 'Revisa la Programación para ver el próximo horario';
     }
+    renderActivityIconInto('liveNowIcon', '');
   }
 }
 
@@ -140,6 +310,17 @@ function setDay(key){
   renderDayPills();
   renderTimeline();
 }
+// ---------------- Recinto según tipo de prueba ----------------
+// Regla fija: el lanzamiento de bala se realiza en el Estadio Atlético Militar;
+// todo el resto del programa se realiza en el Estadio Municipal Ester Roa Rebolledo.
+function getVenueForActivity(name){
+  const lower = (name || '').toLowerCase();
+  if(lower.includes('bala')){
+    return 'Estadio Atlético Militar';
+  }
+  return 'Estadio Municipal Ester Roa Rebolledo';
+}
+
 function renderTimeline(){
   const wrap = document.getElementById('timelineWrap');
   const items = (SCHEDULE[currentDay] && SCHEDULE[currentDay].items) || [];
@@ -152,12 +333,17 @@ function renderTimeline(){
     if(it.status==='done'){ cls='done'; tag='<span class="tl-tag tag-done">Finalizada</span>'; }
     else if(it.status==='live'){ cls='live'; tag='<span class="tl-tag tag-live">● En vivo</span>'; }
     else if(it.status==='next'){ tag='<span class="tl-tag tag-next">Próxima</span>'; }
+    const venue = getVenueForActivity(it.name);
+    const venueTag = venue !== 'Estadio Municipal Ester Roa Rebolledo'
+      ? `<div style="font-size:11px; color:#C9531C; font-weight:600; margin-top:4px;">📍 ${venue}</div>`
+      : '';
     return `
       <div class="tl-item ${cls}">
         <div class="tl-card">
           <div class="tl-time">${it.time} hrs</div>
           <div class="tl-name">${it.name}</div>
           <div style="font-size:11.5px; color:var(--text-soft); margin-top:1px;">${it.cat}</div>
+          ${venueTag}
           ${tag}
         </div>
       </div>`;
@@ -181,12 +367,17 @@ function eventCardHTML(ev){
         <div class="mark">${r.mark}</div>
       </div>`;
   }).join('');
+  const venue = getVenueForActivity(ev.name);
+  const venueLine = venue !== 'Estadio Municipal Ester Roa Rebolledo'
+    ? `<div style="font-size:11px; color:#C9531C; font-weight:600; margin-top:2px;">📍 ${venue}</div>`
+    : '';
   return `
     <div class="event-card">
       <div class="ehead">
         <div>
           <div class="en">${ev.name}</div>
           <div class="ec">${ev.cat}</div>
+          ${venueLine}
         </div>
         ${badge}
       </div>
@@ -338,6 +529,7 @@ async function manualRefresh(){
 // ---------------- INIT ----------------
 function initApp(){
   applyEventInfo();
+  renderCountdown();
   renderHomeStats();
   renderHomeNowCompeting();
   renderHomeTop3();

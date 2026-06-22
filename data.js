@@ -163,3 +163,18 @@ let GALLERY = [
   { url:"img/g1.svg", cap:"Final 100m varones", filter:"pista" },
   { url:"img/g3.svg", cap:"Podio salto largo", filter:"podio" },
 ];
+
+// ---------- SERVICIOS DEL RECINTO, POR SECTOR ----------
+// Editable directamente aquí. Cada item: nombre del servicio, sector donde se ubica
+// (debe coincidir con la letra que aparecerá en los letreros físicos del recinto el día del evento),
+// y un ícono (uno de: bano, enfermeria, alimentacion, hidratacion, delegaciones, acceso).
+let VENUE_SERVICES = [
+  { name: "Baños", sector: "Sector A", icon: "bano" },
+  { name: "Baños", sector: "Sector C", icon: "bano" },
+  { name: "Enfermería", sector: "Sector B", icon: "enfermeria" },
+  { name: "Alimentación y cafetería", sector: "Sector A", icon: "alimentacion" },
+  { name: "Zona de hidratación", sector: "Sector B", icon: "hidratacion" },
+  { name: "Ubicación de delegaciones", sector: "Sector D", icon: "delegaciones" },
+  { name: "Acceso a cancha / pista", sector: "Sector C", icon: "acceso" },
+];
+
