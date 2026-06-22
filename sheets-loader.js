@@ -8,7 +8,7 @@
 // https://docs.google.com/spreadsheets/d/ESTE_ES_EL_ID/edit
 // ============================================================
 
-const SHEET_ID = "1ip5Z7rn_jA7yEElOcxUVQ85eyvoc_RRY";
+const SHEET_ID = "17o0lNkUjbkWUZrsRujEhkd6WZwqeyahG";
 
 // No tocar: construye la URL de lectura para cada pestaña
 function sheetUrl(tabName){
@@ -18,11 +18,16 @@ function sheetUrl(tabName){
 // Google envuelve el JSON en "google.visualization.Query.setResponse(...)"
 // Esta función limpia ese envoltorio y devuelve filas como arreglos de objetos simples.
 //
-// Nota importante: Google solo marca la fila 1 como "encabezado" si esa fila
-// está inmovilizada/congelada (Ver → Inmovilizar → 1 fila) en Sheets. Si no lo está,
-// los nombres de columna llegan vacíos (o como "A","B","C"...) y la fila 1 real
-// aparece como un dato más. Para que la app funcione sin depender de ese detalle
-// de formato, detectamos ese caso y usamos la primera fila como encabezados a mano.
+// Nota importante: Google Sheets, al exportar una pestaña vía gviz/tq, no siempre
+// entrega un encabezado limpio en data.table.cols[i].label. Dos casos problemáticos:
+// (1) Si la fila 1 no está inmovilizada/congelada, el label llega vacío o genérico
+//     ("A","B","C"), y la fila 1 real aparece como un dato más.
+// (2) Incluso con la fila 1 congelada, si Google detecta ambigüedad sobre el tipo
+//     de columna, puede generar un label que CONCATENA el encabezado real con
+//     varias muestras de valores de esa columna, separados por espacios (por
+//     ejemplo "Campo NombreEvento Recinto Direccion" en vez de solo "Campo").
+// Ambos casos se corrigen aquí para que la app no dependa de configuraciones
+// frágiles de formato en la planilla.
 async function fetchSheetTab(tabName){
   const res = await fetch(sheetUrl(tabName));
   const text = await res.text();
@@ -33,12 +38,21 @@ async function fetchSheetTab(tabName){
   let cols = data.table.cols.map(c => (c.label || '').trim());
   let dataRows = data.table.rows;
 
-  // ¿Google no detectó encabezados? (labels vacíos o genéricos tipo "A","B","C")
+  // Caso 1: ¿Google no detectó encabezados? (labels vacíos o genéricos tipo "A","B","C")
   const looksGeneric = cols.every((c, i) => c === '' || c === String.fromCharCode(65 + i));
   if(looksGeneric && dataRows.length){
-    // Usamos la primera fila de datos como encabezados reales, y la quitamos del resultado
     cols = dataRows[0].c.map(cell => (cell ? String(cell.v).trim() : ''));
     dataRows = dataRows.slice(1);
+  } else {
+    // Caso 2: label concatenado (varias palabras separadas por espacio donde
+    // debería haber un solo nombre de columna corto). Nos quedamos solo con
+    // la primera palabra, que es siempre el encabezado real verdadero.
+    cols = cols.map(c => {
+      if(c.includes(' ') && c.split(' ').length > 1){
+        return c.split(' ')[0];
+      }
+      return c;
+    });
   }
 
   const rows = dataRows.map(r => {

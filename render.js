@@ -231,7 +231,7 @@ const ACTIVITY_ICONS = [
 ];
 const DEFAULT_ACTIVITY_ICON = {
   color: '#F2994A',
-  svg: '<circle cx="6" cy="5" r="2" fill="currentColor"/><path d="M6 7v5l5 2-1 8M6 12l5-1 3-5" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>'
+  svg: '<path d="M14.5 5.3a1.9 1.9 0 1 0 0-3.8 1.9 1.9 0 0 0 0 3.8z" fill="currentColor"/><path d="M19.2 9.6l-3.4-1.3-1-2.3a1.1 1.1 0 0 0-1.4-.6 1.1 1.1 0 0 0-.6 1.4l1.1 2.6c.1.4.5.7.9.8l2.6 1-.8 3-3.3-.7-2.2-2.8a1.1 1.1 0 0 0-1.5-.2 1.1 1.1 0 0 0-.2 1.5l2.4 3.1c.2.3.6.5 1 .6l3.1.6-2.2 4a1.1 1.1 0 0 0 .4 1.5 1.1 1.1 0 0 0 1.5-.4l2.5-4.5.6 2.6c.1.5.5.9 1 .9h.1c.6 0 1-.6.9-1.2l-1-4.1 2-.5a1.1 1.1 0 0 0 .8-1.3l-1-3.8a1.1 1.1 0 0 0-1-.8z" fill="currentColor"/>'
 };
 
 function getActivityIcon(name){
