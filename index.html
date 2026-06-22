@@ -523,26 +523,7 @@
   .medal-bronze{color:#A86327; font-weight:700;}
   .medal-total{font-weight:800; color:var(--navy-800);}
 
-  /* ---------- Historico ---------- */
-  .year-pills{ display:flex; gap:8px; overflow-x:auto; padding-bottom:4px; margin-bottom:14px;}
-  .accordion-item{
-    background:#fff; border:1px solid var(--line); border-radius:14px; margin-bottom:10px; overflow:hidden;
-  }
-  .acc-head{
-    display:flex; justify-content:space-between; align-items:center;
-    padding:13px 14px; cursor:pointer;
-  }
-  .acc-head .an{font-weight:700; font-size:13.5px;}
-  .acc-head .ac{font-size:11.5px; color:var(--text-soft); margin-top:1px;}
   .acc-chev{ transition:transform .2s; color:var(--text-soft); flex-shrink:0;}
-  .accordion-item.open .acc-chev{ transform:rotate(180deg);}
-  .acc-body{ display:none; padding:0 14px 14px;}
-  .accordion-item.open .acc-body{ display:block;}
-  .hist-row{
-    display:flex; align-items:center; gap:10px; padding:8px 0;
-    border-top:1px solid #F0F2F6;
-  }
-  .hist-row:first-child{border-top:none;}
 
   /* ---------- Galeria ---------- */
   .gallery-grid{
@@ -742,16 +723,10 @@
       <div class="seg-tabs">
         <button class="seg-tab active" data-tab="live" onclick="setVivoTab('live')">En vivo</button>
         <button class="seg-tab" data-tab="final" onclick="setVivoTab('final')">Finalizadas</button>
-        <button class="seg-tab" data-tab="historico" onclick="setVivoTab('historico')">Históricas</button>
       </div>
 
       <div id="vivoLive"></div>
       <div id="vivoFinal" style="display:none;"></div>
-
-      <div id="vivoHistorico" style="display:none;">
-        <div class="year-pills" id="yearPills"></div>
-        <div id="historicoList"></div>
-      </div>
     </section>
 
     <!-- ---------- MEDALLERO ---------- -->

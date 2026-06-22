@@ -8,7 +8,7 @@
 // https://docs.google.com/spreadsheets/d/ESTE_ES_EL_ID/edit
 // ============================================================
 
-const SHEET_ID = "167QKtJf2E4HvMGhVjLSvsOPfv3weEKVk";
+const SHEET_ID = "17o0lNkUjbkWUZrsRujEhkd6WZwqeyahG";
 
 // No tocar: construye la URL de lectura para cada pestaña
 function sheetUrl(tabName){
@@ -123,31 +123,6 @@ function buildLiveAndFinal(rows){
   };
 }
 
-function buildHistorico(rows){
-  const byYear = {};
-  rows
-    .filter(r => r.Anio && String(r.Prueba || '').trim().length <= 80)
-    .forEach(r => {
-    const year = String(r.Anio).trim();
-    if(!byYear[year]) byYear[year] = {};
-    const evKey = String(r.Prueba).trim();
-    if(!byYear[year][evKey]) byYear[year][evKey] = { event: evKey };
-    const posMap = { "1":"first", "2":"second", "3":"third" };
-    const posKey = posMap[String(r.Posicion).trim()];
-    if(posKey){
-      byYear[year][evKey][posKey] = {
-        athlete: String(r.Atleta || '').trim(),
-        school: String(r.Colegio || '').trim(),
-      };
-    }
-  });
-  const result = {};
-  Object.keys(byYear).sort((a,b)=> b-a).forEach(year => {
-    result[year] = Object.values(byYear[year]);
-  });
-  return result;
-}
-
 function buildGallery(rows){
   return rows
     .filter(r => r.URL_Imagen && String(r.URL_Imagen).trim().startsWith('http'))
@@ -183,11 +158,10 @@ function buildVenueServices(rows){
 
 async function loadFromSheets(){
   try {
-    const [medalRows, schedRows, liveRows, histRows, galRows, infoRows, servRows] = await Promise.all([
+    const [medalRows, schedRows, liveRows, galRows, infoRows, servRows] = await Promise.all([
       fetchSheetTab("Medallero"),
       fetchSheetTab("Programacion"),
       fetchSheetTab("EnVivo"),
-      fetchSheetTab("Historico"),
       fetchSheetTab("Galeria"),
       fetchSheetTab("Info"),
       fetchSheetTab("Servicios"),
@@ -200,7 +174,6 @@ async function loadFromSheets(){
       LIVE_EVENTS = live;
       FINAL_EVENTS_TODAY = final;
     }
-    if(histRows.length) HISTORICAL = buildHistorico(histRows);
     if(galRows.length) GALLERY = buildGallery(galRows);
     if(infoRows.length) window.EVENT_INFO = buildInfo(infoRows);
     if(servRows.length) VENUE_SERVICES = buildVenueServices(servRows);

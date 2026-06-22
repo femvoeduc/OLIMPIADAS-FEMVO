@@ -132,28 +132,6 @@ let FINAL_EVENTS_TODAY = [
   }
 ];
 
-// ---------- RESULTADOS HISTÓRICOS (años anteriores) ----------
-let HISTORICAL = {
-  "2025": [
-    { event:"100m planos Damas (16-18)", first:{athlete:"Camila Herrera", school:"Liceo San Ignacio"}, second:{athlete:"Daniela Soto", school:"Colegio Valle del Olivo"}, third:{athlete:"Paula Jiménez", school:"Colegio Las Encinas"} },
-    { event:"100m planos Varones (16-18)", first:{athlete:"Felipe Araya", school:"Colegio Valle del Olivo"}, second:{athlete:"Cristián Molina", school:"Colegio Andes del Pacífico"}, third:{athlete:"Bastián Núñez", school:"Liceo San Ignacio"} },
-    { event:"Salto largo Damas (14-15)", first:{athlete:"Valentina Campos", school:"Colegio Andes del Pacífico"}, second:{athlete:"Antonia Vergara", school:"Colegio Padre Hurtado"}, third:{athlete:"María José Tapia", school:"Liceo San Ignacio"} },
-    { event:"800m planos Varones (16-18)", first:{athlete:"Sebastián Rojas", school:"Liceo San Ignacio"}, second:{athlete:"Maximiliano Reyes", school:"Colegio Valle del Olivo"}, third:{athlete:"Joaquín Sandoval", school:"Escuela Manuel Rodríguez"} },
-    { event:"Lanzamiento de jabalina Varones (16-18)", first:{athlete:"Rodrigo Ibáñez", school:"Colegio Las Encinas"}, second:{athlete:"Esteban Pizarro", school:"Colegio Valle del Olivo"}, third:{athlete:"Nicolás Bustos", school:"Liceo Bicentenario Quillota"} },
-  ],
-  "2024": [
-    { event:"100m planos Damas (16-18)", first:{athlete:"Josefa Contreras", school:"Colegio Valle del Olivo"}, second:{athlete:"Camila Herrera", school:"Liceo San Ignacio"}, third:{athlete:"Rocío Fernández", school:"Colegio Andes del Pacífico"} },
-    { event:"100m planos Varones (16-18)", first:{athlete:"Cristián Molina", school:"Colegio Andes del Pacífico"}, second:{athlete:"Felipe Araya", school:"Colegio Valle del Olivo"}, third:{athlete:"Diego Fuentes", school:"Colegio Padre Hurtado"} },
-    { event:"Salto alto Varones (16-18)", first:{athlete:"Joaquín Pérez", school:"Liceo San Ignacio"}, second:{athlete:"Matías Lobos", school:"Colegio Valle del Olivo"}, third:{athlete:"Ignacio Vidal", school:"Escuela República de Chile"} },
-    { event:"400m planos Damas (14-15)", first:{athlete:"Martina Vega", school:"Colegio Valle del Olivo"}, second:{athlete:"Florencia Muñoz", school:"Colegio Valle del Olivo"}, third:{athlete:"Antonia Reyes", school:"Liceo San Ignacio"} },
-  ],
-  "2023": [
-    { event:"100m planos Damas (16-18)", first:{athlete:"Daniela Soto", school:"Colegio Valle del Olivo"}, second:{athlete:"Javiera Lara", school:"Liceo San Ignacio"}, third:{athlete:"Camila Herrera", school:"Liceo San Ignacio"} },
-    { event:"Lanzamiento de bala Damas (12-13)", first:{athlete:"Constanza Díaz", school:"Liceo San Ignacio"}, second:{athlete:"Javiera Morales", school:"Colegio Las Encinas"}, third:{athlete:"Belén Quiroz", school:"Colegio Pukará"} },
-    { event:"Relevo 4x100 Mixto (16-18)", first:{athlete:"Equipo completo", school:"Colegio Valle del Olivo"}, second:{athlete:"Equipo completo", school:"Liceo San Ignacio"}, third:{athlete:"Equipo completo", school:"Colegio Andes del Pacífico"} },
-  ]
-};
-
 // ---------- GALERÍA DE FOTOS ----------
 let GALLERY = [
   { url:"img/g1.svg", cap:"Salida 100m planos", filter:"pista" },

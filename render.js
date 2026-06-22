@@ -209,26 +209,29 @@ function renderHomeStats(){
 const ACTIVITY_ICONS = [
   { keywords: ['apertura', 'ceremonia', 'inauguracion', 'inauguración', 'cierre', 'clausura', 'premiacion', 'premiación'],
     color: '#FFD23F',
-    svg: '<path d="M12 2L4 7v2l8 4 8-4V7l-8-5z" fill="currentColor"/><path d="M4 11v6l8 4 8-4v-6l-8 4-8-4z" fill="currentColor" opacity="0.6"/>' },
+    svg: '<path d="M12 3c-.3 1-1 1.6-1 2.6 0 1 .5 1.9 1 1.9s1-.9 1-1.9c0-1-.7-1.6-1-2.6z" fill="currentColor"/><rect x="11.2" y="7.3" width="1.6" height="8" rx="0.5" fill="currentColor"/><path d="M8.5 19.5c0-1.4 1.6-2.3 3.5-2.3s3.5.9 3.5 2.3" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round"/>' },
   { keywords: ['almuerzo', 'receso', 'colación', 'colacion', 'break'],
     color: '#F2994A',
-    svg: '<path d="M5 11h14a1 1 0 0 1 1 1v1a6 6 0 0 1-6 6H10a6 6 0 0 1-6-6v-1a1 1 0 0 1 1-1z" fill="currentColor"/><path d="M7 11V7a2 2 0 0 1 4 0M11 11V6a2 2 0 0 1 4 0v5" stroke="currentColor" stroke-width="1.5" fill="none"/>' },
-  { keywords: ['salto alto', 'salto largo', 'salto triple', 'salto'],
+    svg: '<path d="M6 2v8M4 2v4.5a2 2 0 0 0 4 0V2" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M6 10v12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M17 2c-1.4 0-2.2 1.3-2.2 3s.8 3 2.2 3" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M17 2v20" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>' },
+  { keywords: ['salto alto'],
     color: '#10477f',
-    svg: '<path d="M3 20h6M15 4l4 4-9 9-4-4 9-9z" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>' },
+    svg: '<line x1="3" y1="18" x2="21" y2="6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="3" cy="18" r="2" fill="currentColor"/><circle cx="21" cy="6" r="2" fill="currentColor"/><path d="M3 21h6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" opacity="0.5"/>' },
+  { keywords: ['salto largo', 'salto triple', 'salto'],
+    color: '#10477f',
+    svg: '<path d="M2 19h6M2 15h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M10 19c2-8 6-14 12-16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/><circle cx="10" cy="19" r="1.6" fill="currentColor"/>' },
   { keywords: ['lanzamiento', 'bala', 'jabalina', 'disco', 'martillo'],
     color: '#0c3560',
-    svg: '<circle cx="7" cy="7" r="3" fill="currentColor"/><path d="M9 9l10 10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>' },
+    svg: '<circle cx="6" cy="6" r="2.6" fill="currentColor"/><path d="M6 6c4 1 9 4 13 11" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/><circle cx="19" cy="17" r="1.3" fill="currentColor" opacity="0.6"/><circle cx="21.5" cy="19.5" r="0.9" fill="currentColor" opacity="0.3"/>' },
   { keywords: ['relevo', 'posta', '4x100', '4 x 100', '4x400', '4 x 400'],
     color: '#F2994A',
-    svg: '<path d="M4 17l5-5-5-5M11 17l5-5-5-5" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 7h3v3M17 17h3v-3" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>' },
+    svg: '<rect x="2" y="10.5" width="7" height="3" rx="1.5" fill="currentColor"/><rect x="15" y="10.5" width="7" height="3" rx="1.5" fill="currentColor" opacity="0.55"/><path d="M9 9l3 3-3 3" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>' },
   { keywords: ['vallas', '110m', '100m vallas', '400m vallas'],
     color: '#10477f',
-    svg: '<path d="M2 18h20M6 18V10M6 10h0M10 18v-8M14 18v-8M18 18v-8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M4 10h4M8 10h4M12 10h4M16 10h4" stroke="currentColor" stroke-width="2"/>' },
+    svg: '<path d="M5 19V9M19 19V9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M5 11h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M2 19c3-5 7-9 20-6" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" opacity="0.85"/>' },
 ];
 const DEFAULT_ACTIVITY_ICON = {
   color: '#F2994A',
-  svg: '<path d="M12 2C12 2 8 7 8 11.5C8 14 9.5 16 12 16C14.5 16 16 14 16 11.5C16 9.8 15 8 14 6.5C14 8 13 9 12 9C11 9 11.5 7 11.5 6C11.5 4.5 12 3 12 2Z" fill="currentColor"/>'
+  svg: '<circle cx="6" cy="5" r="2" fill="currentColor"/><path d="M6 7v5l5 2-1 8M6 12l5-1 3-5" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>'
 };
 
 function getActivityIcon(name){
@@ -372,13 +375,18 @@ function eventCardHTML(ev){
   const venueLine = venue !== 'Estadio Municipal Ester Roa Rebolledo'
     ? `<div style="font-size:11px; color:#C9531C; font-weight:600; margin-top:2px;">📍 ${venue}</div>`
     : '';
+  const icon = getActivityIcon(ev.name);
+  const iconHTML = `<div style="width:34px;height:34px;border-radius:10px;background:var(--navy-100);display:flex;align-items:center;justify-content:center;flex-shrink:0;padding:7px;"><svg viewBox="0 0 24 24" fill="none" style="width:100%;height:100%;color:${icon.color}">${icon.svg}</svg></div>`;
   return `
     <div class="event-card">
       <div class="ehead">
-        <div>
-          <div class="en">${ev.name}</div>
-          <div class="ec">${ev.cat}</div>
-          ${venueLine}
+        <div style="display:flex; align-items:flex-start; gap:10px;">
+          ${iconHTML}
+          <div>
+            <div class="en">${ev.name}</div>
+            <div class="ec">${ev.cat}</div>
+            ${venueLine}
+          </div>
         </div>
         ${badge}
       </div>
@@ -398,57 +406,6 @@ function setVivoTab(tab){
   document.querySelectorAll('#screen-vivo .seg-tab').forEach(t=>t.classList.toggle('active', t.dataset.tab===tab));
   document.getElementById('vivoLive').style.display = tab==='live' ? 'block':'none';
   document.getElementById('vivoFinal').style.display = tab==='final' ? 'block':'none';
-  document.getElementById('vivoHistorico').style.display = tab==='historico' ? 'block':'none';
-}
-
-// ---------------- HISTÓRICO ----------------
-let currentYear = null;
-function renderYearPills(){
-  if(!currentYear || !HISTORICAL[currentYear]) currentYear = Object.keys(HISTORICAL)[0];
-  const wrap = document.getElementById('yearPills');
-  wrap.innerHTML = Object.keys(HISTORICAL).map(y=>
-    `<button class="day-pill ${y===currentYear?'active':''}" onclick="setYear('${y}')">${y}</button>`
-  ).join('');
-}
-function setYear(y){
-  currentYear = y;
-  renderYearPills();
-  renderHistoricoList();
-}
-function renderHistoricoList(){
-  const wrap = document.getElementById('historicoList');
-  const events = (currentYear && HISTORICAL[currentYear]) || [];
-  if(!events.length){
-    wrap.innerHTML = `<div class="muted-note">Aún no hay resultados históricos cargados.</div>`;
-    return;
-  }
-  // Si falta algún puesto (1°, 2° o 3°) en una fila de la planilla, mostramos un
-  // placeholder en vez de romper toda la pantalla — así una fila incompleta no
-  // afecta al resto de los resultados históricos.
-  function podiumRow(pos, posClass, data){
-    const athlete = (data && data.athlete) ? data.athlete : '—';
-    const school = (data && data.school) ? data.school : 'Sin datos aún';
-    return `<div class="hist-row"><div class="pos-chip ${posClass}">${pos}</div><div class="who"><div class="athlete">${athlete}</div><div class="school">${school}</div></div></div>`;
-  }
-  wrap.innerHTML = events.map((ev,idx)=>`
-    <div class="accordion-item" id="acc-${idx}">
-      <div class="acc-head" onclick="toggleAcc(${idx})">
-        <div>
-          <div class="an">${ev.event}</div>
-          <div class="ac">Edición ${currentYear}</div>
-        </div>
-        <svg class="acc-chev" width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </div>
-      <div class="acc-body">
-        ${podiumRow(1, 'p1', ev.first)}
-        ${podiumRow(2, 'p2', ev.second)}
-        ${podiumRow(3, 'p3', ev.third)}
-      </div>
-    </div>
-  `).join('');
-}
-function toggleAcc(idx){
-  document.getElementById('acc-'+idx).classList.toggle('open');
 }
 
 // ---------------- MEDALLERO ----------------
@@ -554,8 +511,6 @@ function initApp(){
   safeRender(renderTimeline, 'Programación');
   safeRender(renderVivoLive, 'Resultados en vivo');
   safeRender(renderVivoFinal, 'Resultados finalizados');
-  safeRender(renderYearPills, 'Años históricos');
-  safeRender(renderHistoricoList, 'Resultados históricos');
   safeRender(renderPodium, 'Podio');
   safeRender(renderMedalTable, 'Tabla de medallero');
   safeRender(renderGalleryFilters, 'Filtros de galería');
